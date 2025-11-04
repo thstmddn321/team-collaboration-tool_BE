@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.seungwoo.domain.project.Project;
+import me.seungwoo.domain.timeResponse.TimeResponse;
 import me.seungwoo.domain.user.User;
 import java.time.LocalDate;
 import java.time.LocalTime;

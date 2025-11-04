@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.seungwoo.domain.post.Post;
+import me.seungwoo.domain.voteOption.VoteOption;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

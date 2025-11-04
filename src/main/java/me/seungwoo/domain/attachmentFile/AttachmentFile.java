@@ -1,8 +1,9 @@
-package me.seungwoo.domain.post;
+package me.seungwoo.domain.attachmentFile;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.seungwoo.domain.post.Post;
 
 @Entity
 @Table(name = "attachments_file")

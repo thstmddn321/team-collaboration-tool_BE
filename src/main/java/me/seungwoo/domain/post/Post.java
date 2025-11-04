@@ -3,6 +3,7 @@ package me.seungwoo.domain.post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.seungwoo.domain.attachmentFile.AttachmentFile;
 import me.seungwoo.domain.project.Project;
 import me.seungwoo.domain.user.User;
 import java.time.LocalDateTime;

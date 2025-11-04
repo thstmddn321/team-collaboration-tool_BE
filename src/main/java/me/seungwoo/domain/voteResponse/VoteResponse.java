@@ -1,27 +1,26 @@
-package me.seungwoo.domain.project;
+package me.seungwoo.domain.voteResponse;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.seungwoo.domain.user.User;
+import me.seungwoo.domain.voteOption.VoteOption;
 
 @Entity
-@Table(name = "project_user")
+@Table(name = "vote_response")
 @Getter
 @NoArgsConstructor
-public class ProjectUser {
+public class VoteResponse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long projectUserPk;
+    private Long responsePk;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_pk", nullable = false)
-    private Project project;
+    @JoinColumn(name = "option_pk", nullable = false)
+    private VoteOption option;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk", nullable = false)
     private User user;
-
-    private String status;
 }

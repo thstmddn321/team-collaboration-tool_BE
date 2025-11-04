@@ -1,32 +1,28 @@
-package me.seungwoo.domain.timepoll;
+package me.seungwoo.domain.projectUser;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.seungwoo.domain.project.Project;
 import me.seungwoo.domain.user.User;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "time_response")
+@Table(name = "project_user")
 @Getter
 @NoArgsConstructor
-public class TimeResponse {
+public class ProjectUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long responsePk;
+    private Long projectUserPk;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "poll_pk", nullable = false)
-    private TimePoll poll;
+    @JoinColumn(name = "project_pk", nullable = false)
+    private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk", nullable = false)
     private User user;
 
-    @Column(nullable = false)
-    private LocalDateTime startTimeUtc;
-
-    @Column(nullable = false)
-    private LocalDateTime endTimeUtc;
+    private String status;
 }

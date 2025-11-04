@@ -1,8 +1,11 @@
-package me.seungwoo.domain.vote;
+package me.seungwoo.domain.voteOption;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.seungwoo.domain.vote.Vote;
+import me.seungwoo.domain.voteResponse.VoteResponse;
+
 import java.util.List;
 
 @Entity

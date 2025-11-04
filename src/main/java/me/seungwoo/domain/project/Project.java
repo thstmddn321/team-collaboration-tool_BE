@@ -3,7 +3,9 @@ package me.seungwoo.domain.project;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import me.seungwoo.domain.projectUser.ProjectUser;
 import me.seungwoo.domain.user.User;
+import me.seungwoo.domain.post.Post;
 import java.util.List;
 
 @Entity
