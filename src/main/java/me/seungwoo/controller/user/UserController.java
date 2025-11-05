@@ -2,7 +2,7 @@ package me.seungwoo.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import me.seungwoo.domain.user.User;
-import me.seungwoo.dto.user.UserSignupRequest;
+import me.seungwoo.dto.user.UserSignupRequestDTO;
 import me.seungwoo.service.user.UserService;
 import me.seungwoo.config.jwt.JwtTokenProvider; // ✅ JWT 유틸 import 추가
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,9 @@ public class UserController {
      * 회원가입 (비밀번호 암호화 + 검증)
      */
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserSignupRequest request) {
+    public ResponseEntity<String> signup(@RequestBody UserSignupRequestDTO request) {
         User savedUser = userService.registerUser(request);
-        return ResponseEntity.ok("회원가입 성공 ✅ (비밀번호 암호화 완료)\nID: " + savedUser.getId());
+        return ResponseEntity.ok("회원가입 성공 ✅ (비밀번호 암호화 완료)\nEmail: " + savedUser.getEmail());
     }
 
     /**
@@ -34,16 +34,16 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        String id = request.get("id");
+        String email = request.get("email");
         String password = request.get("password");
 
-        User user = userService.findByUserId(id);
+        User user = userService.findByEmail(email);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtTokenProvider.generateToken(user.getId());
+        String token = jwtTokenProvider.generateToken(user.getEmail());
         return ResponseEntity.ok(Map.of("token", token));
     }
 }

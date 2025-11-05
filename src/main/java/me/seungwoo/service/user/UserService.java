@@ -2,13 +2,11 @@ package me.seungwoo.service.user;
 
 import lombok.RequiredArgsConstructor;
 import me.seungwoo.domain.user.User;
-import me.seungwoo.dto.user.UserSignupRequest;
+import me.seungwoo.dto.user.UserSignupRequestDTO;
 import me.seungwoo.repository.user.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,21 +19,14 @@ public class UserService {
      * 회원가입 처리 (비밀번호 검증 + 암호화 + 저장)
      */
     @Transactional
-    public User registerUser(UserSignupRequest request) {
-        // ✅ 1. 비밀번호 일치 확인
-        if (!request.getPassword().equals(request.getPasswordConfirm())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        // ✅ 2. ID 중복 체크
-        if (userRepository.existsById(request.getId())) {
+    public User registerUser(UserSignupRequestDTO request) {
+        // ✅ Email
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 ID입니다.");
         }
-
-        // ✅ 3. 비밀번호 암호화
+        // ✅ 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-
-        // ✅ 4. User 엔티티 생성 (암호화된 비밀번호로 저장)
+        // ✅ User 엔티티 생성 (암호화된 비밀번호로 저장)
         User user = new User(
                 request.getId(),
                 encodedPassword,
@@ -44,12 +35,11 @@ public class UserService {
                 request.getPhone(),
                 request.getField()
         );
-
-        // ✅ 5. DB 저장
+        // ✅ DB 저장
         return userRepository.save(user);
     }
-    public User findByUserId(String id) {
-        return userRepository.findById(id)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
     }
 }

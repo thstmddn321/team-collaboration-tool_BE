@@ -22,9 +22,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userPk;
 
-    @Column(nullable = false, unique = true)
-    private String id;
-
     @Column(nullable = false)
     private String password;
 
@@ -41,7 +38,6 @@ public class User {
 
 
     public User(String id, String password, String name, String email, String phone, String field) {
-        this.id = id;
         this.password = password;
         this.name = name;
         this.email = email;

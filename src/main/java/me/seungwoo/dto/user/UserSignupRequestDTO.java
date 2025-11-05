@@ -5,10 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserSignupRequest {
-    private String id;
+public class UserSignupRequestDTO {
+    private String id; // 없에야함
     private String password;
-    private String passwordConfirm;
     private String name;
     private String email;
     private String phone;
