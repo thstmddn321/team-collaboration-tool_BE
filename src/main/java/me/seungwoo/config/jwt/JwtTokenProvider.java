@@ -16,20 +16,20 @@ public class JwtTokenProvider {
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
     // 🔹 토큰 생성
-    public String generateToken(String userId) {
+    public String generateToken(String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // 🔹 토큰에서 userId 추출
-    public String getUserIdFromToken(String token) {
+    // 🔹 토큰에서 userEmail 추출
+    public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
