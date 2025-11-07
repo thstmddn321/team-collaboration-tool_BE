@@ -57,6 +57,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+
     @Transactional
     public void updatePassword(String email, UserPasswordUpdateRequest request) {
         User user = userRepository.findByEmail(email)

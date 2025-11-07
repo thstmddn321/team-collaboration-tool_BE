@@ -28,8 +28,16 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody UserSignupRequestDTO request) {
-        User savedUser = userService.registerUser(request);
-        return ResponseEntity.ok("회원가입 성공 ✅ (비밀번호 암호화 완료)\nEmail: " + savedUser.getEmail());
+        try {
+            User savedUser = userService.registerUser(request);
+            return ResponseEntity.ok("회원가입 성공 ✅ \nEmail: " + savedUser.getEmail());
+        } catch (IllegalArgumentException e) {
+            // 이메일 중복 등의 예외 처리
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            // DB 문제 등 기타 예외 처리
+            return ResponseEntity.status(500).body("회원가입 중 오류가 발생했습니다.");
+        }
     }
 
     /**
@@ -58,11 +66,19 @@ public class UserController {
     // 🔹 프로필 수정
     @PatchMapping("/update")
     public ResponseEntity<String> updateUser(
-            @AuthenticationPrincipal String userEmail, // JWT 필터에서 설정된 인증 정보
+            @AuthenticationPrincipal String userEmail,
             @RequestBody UserUpdateRequest request) {
 
-        userService.updateUser(userEmail, request);
-        return ResponseEntity.ok("회원 정보가 성공적으로 수정되었습니다.");
+        try {
+            userService.updateUser(userEmail, request);
+            return ResponseEntity.ok("회원 정보가 성공적으로 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            // 존재하지 않는 사용자 등 비즈니스 로직 예외 처리
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // 그 외 예기치 못한 오류 처리
+            return ResponseEntity.internalServerError().body("서버 내부 오류가 발생했습니다.");
+        }
     }
     // 비밀번호 변경
     @PatchMapping("/update/password")
