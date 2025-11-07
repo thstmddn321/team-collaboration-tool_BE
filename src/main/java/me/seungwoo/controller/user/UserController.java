@@ -2,6 +2,7 @@ package me.seungwoo.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import me.seungwoo.domain.user.User;
+import me.seungwoo.dto.user.UserInfoResponse;
 import me.seungwoo.dto.user.UserPasswordUpdateRequest;
 import me.seungwoo.dto.user.UserSignupRequestDTO;
 import me.seungwoo.dto.user.UserUpdateRequest;
@@ -63,6 +64,20 @@ public class UserController {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
+    // 내 정보 조회
+    @GetMapping("/me")
+    public ResponseEntity<UserInfoResponse> getMyInfo(@AuthenticationPrincipal String userEmail) {
+        User user = userService.findByEmail(userEmail);
+
+        UserInfoResponse response = new UserInfoResponse(
+                user.getName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getField()
+        );
+
+        return ResponseEntity.ok(response);
+    }
     // 🔹 프로필 수정
     @PatchMapping("/update")
     public ResponseEntity<String> updateUser(
