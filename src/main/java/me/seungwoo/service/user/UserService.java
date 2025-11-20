@@ -9,6 +9,7 @@ import me.seungwoo.repository.user.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -71,6 +72,25 @@ public class UserService {
         // 🔹 새 비밀번호 암호화 후 저장
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(encodedNewPassword);
+    }
+
+    /**
+     * 회원 탈퇴 (Soft Delete)
+     */
+    @Transactional
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        
+        // 이미 탈퇴한 계정인지 확인
+        if (user.getIsDeleted()) {
+            throw new IllegalArgumentException("이미 탈퇴한 계정입니다.");
+        }
+        
+        // Soft Delete 처리
+        user.setIsDeleted(true);
+        user.setDeletedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 
 }

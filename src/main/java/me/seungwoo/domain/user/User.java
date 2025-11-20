@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
+import java.time.LocalDateTime;
 
 import lombok.Setter;
 import me.seungwoo.domain.project.Project;
@@ -35,6 +36,12 @@ public class User {
     private String phone;
 
     private String field;
+
+    // 회원 탈퇴 관련 필드
+    @Column(nullable = false)
+    private Boolean isDeleted = false;  // 탈퇴 여부
+
+    private LocalDateTime deletedAt;    // 탈퇴 시간
 
 
     public User(String password, String name, String email, String phone, String field) {

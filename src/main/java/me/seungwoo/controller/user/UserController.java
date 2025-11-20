@@ -52,6 +52,11 @@ public class UserController {
             return ResponseEntity.status(404).body("해당 이메일의 사용자가 존재하지 않습니다.");
         }
 
+        // 🔹 탈퇴한 계정인지 확인
+        if (user.getIsDeleted()) {
+            return ResponseEntity.status(403).body("탈퇴한 계정입니다. 로그인할 수 없습니다.");
+        }
+
         // 🔹 비밀번호 불일치
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
@@ -102,6 +107,21 @@ public class UserController {
             return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    /**
+     * 회원 탈퇴
+     */
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal String userEmail) {
+        try {
+            userService.deleteUser(userEmail);
+            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("회원 탈퇴 중 오류가 발생했습니다.");
         }
     }
 }
