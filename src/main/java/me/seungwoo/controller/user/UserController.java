@@ -2,10 +2,7 @@ package me.seungwoo.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import me.seungwoo.domain.user.User;
-import me.seungwoo.dto.user.UserInfoResponse;
-import me.seungwoo.dto.user.UserPasswordUpdateRequest;
-import me.seungwoo.dto.user.UserSignupRequestDTO;
-import me.seungwoo.dto.user.UserUpdateRequest;
+import me.seungwoo.dto.user.*;
 import me.seungwoo.service.user.UserService;
 import me.seungwoo.config.jwt.JwtTokenProvider; // ✅ JWT 유틸 import 추가
 import org.springframework.http.ResponseEntity;
@@ -31,7 +28,7 @@ public class UserController {
     public ResponseEntity<String> signup(@RequestBody UserSignupRequestDTO request) {
         try {
             User savedUser = userService.registerUser(request);
-            return ResponseEntity.ok("회원가입 성공 ✅ \nEmail: " + savedUser.getEmail());
+            return ResponseEntity.ok("회원가입 성공 \nEmail: " + savedUser.getEmail());
         } catch (IllegalArgumentException e) {
             // 이메일 중복 등의 예외 처리
             return ResponseEntity.status(400).body(e.getMessage());
@@ -45,9 +42,9 @@ public class UserController {
      * 로그인 (JWT 토큰 발급)
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String password = request.get("password");
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
 
         User user = userService.findByEmail(email);
         // 🔹 존재하지 않는 이메일인 경우
