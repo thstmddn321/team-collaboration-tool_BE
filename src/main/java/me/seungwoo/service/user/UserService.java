@@ -23,13 +23,15 @@ public class UserService {
      */
     @Transactional
     public User registerUser(UserSignupRequestDTO request) {
-        // ✅ Email
+        // 이메일 중복 확인
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 Email입니다.");
         }
-        // ✅ 비밀번호 암호화
+        
+        // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        // ✅ User 엔티티 생성 (암호화된 비밀번호로 저장)
+        
+        // User 엔티티 생성
         User user = new User(
                 encodedPassword,
                 request.getName(),
@@ -37,7 +39,8 @@ public class UserService {
                 request.getPhone(),
                 request.getField()
         );
-        // ✅ DB 저장
+        
+        // DB 저장
         return userRepository.save(user);
     }
     public User findByEmail(String email) {
@@ -64,12 +67,12 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        // 🔹 현재 비밀번호 일치 여부 확인
+        // 현재 비밀번호 일치 여부 확인
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
-        } // 이부분 던진거 잡아야함
+        }
 
-        // 🔹 새 비밀번호 암호화 후 저장
+        // 새 비밀번호 암호화 후 저장
         String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(encodedNewPassword);
     }

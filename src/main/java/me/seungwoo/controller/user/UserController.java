@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import me.seungwoo.domain.user.User;
 import me.seungwoo.dto.user.*;
 import me.seungwoo.service.user.UserService;
-import me.seungwoo.config.jwt.JwtTokenProvider; // ✅ JWT 유틸 import 추가
+import me.seungwoo.config.jwt.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // ✅ 추가
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map; // ✅ Map import 추가
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,8 +18,8 @@ import java.util.Map; // ✅ Map import 추가
 public class UserController {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder; // ✅ 암호화기 주입
-    private final JwtTokenProvider jwtTokenProvider;     // ✅ JWT 토큰 유틸 주입
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
      * 회원가입 (비밀번호 암호화 + 검증)
@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<String> signup(@RequestBody UserSignupRequestDTO request) {
         try {
             User savedUser = userService.registerUser(request);
-            return ResponseEntity.ok("회원가입 성공 \nEmail: " + savedUser.getEmail());
+            return ResponseEntity.ok("회원가입 성공 \nEmail: " + savedUser.getEmail( ));
         } catch (IllegalArgumentException e) {
             // 이메일 중복 등의 예외 처리
             return ResponseEntity.status(400).body(e.getMessage());
@@ -47,17 +47,18 @@ public class UserController {
         String password = request.getPassword();
 
         User user = userService.findByEmail(email);
-        // 🔹 존재하지 않는 이메일인 경우
+        
+        // 존재하지 않는 이메일인 경우
         if (user == null) {
             return ResponseEntity.status(404).body("해당 이메일의 사용자가 존재하지 않습니다.");
         }
 
-        // 🔹 탈퇴한 계정인지 확인
+        // 탈퇴한 계정인지 확인
         if (user.getIsDeleted()) {
             return ResponseEntity.status(403).body("탈퇴한 계정입니다. 로그인할 수 없습니다.");
         }
 
-        // 🔹 비밀번호 불일치
+        // 비밀번호 불일치
         if (!passwordEncoder.matches(password, user.getPassword())) {
             return ResponseEntity.status(401).body("비밀번호가 일치하지 않습니다.");
         }
@@ -66,7 +67,9 @@ public class UserController {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-    // 내 정보 조회
+    /**
+     * 내 정보 조회
+     */
     @GetMapping("/me")
     public ResponseEntity<UserInfoResponse> getMyInfo(@AuthenticationPrincipal String userEmail) {
         User user = userService.findByEmail(userEmail);
@@ -80,7 +83,9 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-    // 🔹 프로필 수정
+    /**
+     * 프로필 수정
+     */
     @PatchMapping("/update")
     public ResponseEntity<String> updateUser(
             @AuthenticationPrincipal String userEmail,
@@ -97,7 +102,9 @@ public class UserController {
             return ResponseEntity.internalServerError().body("서버 내부 오류가 발생했습니다.");
         }
     }
-    // 비밀번호 변경
+    /**
+     * 비밀번호 변경
+     */
     @PatchMapping("/update/password")
     public ResponseEntity<String> updatePassword(
             @AuthenticationPrincipal String userEmail,
